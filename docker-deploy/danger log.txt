@@ -1,0 +1,76 @@
+ECE568 hw1 ride share web app danger log
+He Kai, Fang Yincong
+
+1. user can still edit ride status after it is confirmed or completed
+Solved: Separate rides into current rides, confirmed rides, and history rides
+only current rides will be provided with edit and delete buttons
+
+2. a ride owner can join his/her own ride if it is set as shareable
+Solved: filter ride class and exclude those of his own user id
+then display the filtered result so that a user cannot share his own request
+
+3. rider sharer and the ride owner can both edit all information of that ride
+Unsolved
+Our ride status includes
+name = models.CharField(max_length=20, default='me')
+dest = models.CharField(max_length=100, default='home')
+arrival = models.CharField(max_length=50, default="5:00pm-6:00pm")
+pnum = models.IntegerField(default='1')
+vtype = models.CharField(max_length=20, default='Sedan')
+child = models.BooleanField(default=False)#need a child seat or not
+
+When a ride sharer joins a ride, his name and destination will be appended to ride owner's string
+However, this approach neglects the access grant and identity of contents in string.
+This is potentially dangerous if malicious users overwrite
+the string with something else, therefore corrupting other user's request.
+
+Ideally the ride owner or ride sharer can only edit his own name, destination,
+But we didn't find a way to do so with string fields.
+
+4. a driver can search all current requests
+Solved: driver's search will be filtered by his driver profile:
+vehicle type (currently we only support 2 types: Sedan or SUV)
+child seat (if driver has a child seat in his car, 
+he will be able to find requests that need a child seat.
+if the driver doesn't have a child seat, he will only find requests that doesn't need a child seat)
+passenger number (driver sets a maximum number of passengers which must be bigger or equal to requests' passenger number)
+
+When a driver searches for available rides, only the filtered results will be displayed to him.
+
+5. log in failure or access denial is not displayed
+Solved: log in failure will be redirected to a /loginerror/ page
+access denial (passenger login as driver) will follow a similar behavior
+
+6. Cannot search shared ride with specification of having or not having child seat
+Solved: add an extra field in searching form
+if not requesting child seat, requests with or without child seats will be displayed from search
+if requesting a child seat, only requests with child seats will be displayed
+
+7. driver cannot edit his driver profile
+Solved: Add user profile to store profile info
+Passenger also makes use of another profile to display or edit passenger's profile
+
+8. The entire project is contained in one docker container
+Unsolved
+This is potentially dangerous because any program has root priviledge in this container.
+Can serparate into front end and back end contatiners.
+
+9. unscalable search and display service
+Unsolved
+Currently we use Object.filter() to search matching rides and for loop to display them
+If our user grows to hundreds or thousands, this operation may be very slow
+especially for drivers, who can view all available requests.
+A simple solution is add a current location for drivers (and possbly for ride owners and sharers)
+and only display the request within a certain radius of that location.
+
+10. drivers cannot cancel claimed rides
+Unsolved
+This feature is not mentioned in requirements, but it could be bad if the driver
+has something else to do and cannot handle the request immediately. Ride owner would have to be
+kept waiting and no other drivers can claim this ride during the process.
+
+11. driver can pickup his own rides
+Solved
+Again, this feature is not mentioned in requirements, but should not logically happen.
+It can lead to whats called "click farming".
+It can be solved simply by filtering user id.

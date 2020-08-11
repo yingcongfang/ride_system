@@ -1,0 +1,9 @@
+{% extends "users/base.html" %}
+{% block content %}
+<h2>You are not a driver yet! Please log in and edit your driver status in your profile</h2>
+<div class="content-section">
+  <small class ="text-muted">
+    <a href="{% url 'd_info' %}">Edit your driver's information</a>
+  </small>
+</div>
+{% endblock content  %}

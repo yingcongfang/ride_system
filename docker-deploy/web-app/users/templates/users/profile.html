@@ -1,0 +1,18 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <h1 class="account-heading">{{ user.username }} Profile</h1>
+      <form method = "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class = "form-group">
+          <legend class="border-bottom mb-4">Profile</legend>
+          {{ u_form|crispy }}
+        </fieldset>
+      <div class = "form-group">
+        <a class="ml-2" href="{% url 'd_info' %}">Want to be a driver?</a>
+        <button class="btn btn-outline-info" type="submit">Update </button>
+      </div>
+    </form>
+</div>
+{% endblock content  %}

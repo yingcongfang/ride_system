@@ -1,0 +1,37 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content%}
+<p>Welcome, {{request.user.username}}, user ID :{{request.user.id}} </p>
+<p>Driver's License:{{ request.user.profile.license }}, Vehicle Type:{{ request.user.profile.vehicle_type }}  </p>
+
+<small class ="text-muted">
+      <a class="ml-2" href="{% url 'status' %}">Request a ride</a>  <a class="ml-2" href="{% url 'profile' %}">Profile</a> <a class="ml-2" href="{% url 'd_info' %}">Driver's Info </a> <a class="ml-2" href="{% url 'logout' %}">logout</a>
+</small>
+<h1>Look for open rides</h1>
+<body>
+    <p><a href="/look_for_open_ride/">Search</a></p>
+    <p></p>
+
+</body>
+
+<h1>Confirmed rides</h1>
+<body>
+{% for ride in confirmed_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>Ride owner: <strong>{{ ride.name }}</strong> </p>
+        <p>requests a {{ ride.vtype }} to <strong>{{ ride.dest }}</strong> </p>
+        <p>arrival window: {{ ride.arrival }}</p>
+        <p>The ride has {{ ride.pnum }} passengers, need for child seat is {{ ride.child }}, and allowance to share is {{ ride.share }}</p>       
+        <p>driver ID: {{ ride.driver_id }} Status : {{ ride.status }} <a href="/complete_ride/{{ride.id}}/">Complete</a></p>
+{% endfor %}
+</body>
+
+<h1>Completed rides</h1>
+<body>
+{% for ride in completed_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>{{ ride.name }}'s ride to {{ ride.dest }} has been completed</p>
+{% endfor %}
+</body>
+{% endblock %}
+

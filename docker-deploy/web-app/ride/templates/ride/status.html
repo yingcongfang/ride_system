@@ -1,0 +1,57 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content%}
+<p>Welcome, {{request.user.first_name}}, user ID :{{request.user.id}}</p>
+<small class ="text-muted">
+      <a class="ml-2" href="{% url 'd_status' %}">Claim a ride</a>  <a class="ml-2" href="{% url 'profile' %}">Profile</a>  <a class="ml-2" href="{% url 'logout' %}">logout</a>
+</small>
+
+<h1>Make a request, or <a href="/look_for_shared_ride/">Search shared rides</a></h1>
+
+<h5>
+  {% if message %}
+  {{ message }}
+  {% endif %}
+</h5>
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form|crispy}}
+ 
+  <button class="btn btn-outline-info" type="submit"> Request Ride </button>
+</form>
+
+
+<h1>Current rides</h1>
+<body>
+{% for ride in current_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>Ride owner: <strong>{{ ride.name }}</strong> </p>
+        <p>requests a {{ ride.vtype }} to <strong>{{ ride.dest }}</strong> </p>
+        <p>arrival window: {{ ride.arrival }}</p>
+        <p>The ride has {{ ride.pnum }} passengers, need for child seat is {{ ride.child }}, and allowance to share is {{ ride.share }}</p>
+        <p><a href="/edit_ride/{{ride.id}}/">Edit</a> <a href="/delete_ride/{{ride.id}}/">Delete</a></p>
+{% endfor %}
+</body>
+
+<h1>Confirmed rides</h1>
+<body>
+{% for ride in confirmed_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>{{ ride.vtype }} driver <strong>{{ ride.driver_id }}</strong> confirmed {{ ride.name }}'s ride to <strong>{{ ride.dest }}</strong></p>
+        <p>The ride has {{ ride.pnum }} passengers, need for child seat is {{ ride.child }}</p>
+{% endfor %}
+</body>
+
+<h1>Completed rides</h1>
+<body>
+{% for ride in completed_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>{{ ride.vtype }} driver <strong>{{ ride.driver_id }}</strong> completed {{ ride.name }}'s ride to {{ ride.dest }}</p>
+        <p>Status : {{ ride.status }}</p>
+{% endfor %}
+</body>
+{% endblock %}
+
+
+
+

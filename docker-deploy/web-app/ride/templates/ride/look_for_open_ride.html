@@ -1,0 +1,15 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content%}
+<h1>Open rides</h1>
+<body>
+{% for ride in open_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>Ride owner: <strong>{{ ride.name }}</strong> </p>
+        <p>requests a {{ ride.vtype }} to <strong>{{ ride.dest }}</strong> </p>
+        <p>arrival window: {{ ride.arrival }}</p>
+        <p>The ride has {{ ride.pnum }} passengers, need for child seat is {{ ride.child }}, and allowance to share is {{ ride.share }}</p> 
+        <p>Status : {{ ride.status }} <a href="/claim_ride/{{ ride.id }}/">Claim</a> </p>
+{% endfor %}
+</body>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content%}
+<h1>Enter your info to search available rides</h1>
+<body>
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <button class="btn btn-outline-info" type="submit"> Search </button>
+</form>
+<p>rides that matches following requirements will be displayed:</p>
+<p>1. <strong>ride is shareable</strong></p>
+<p>2. <strong>ride's arrival window matches your desired arrival window</strong></p>
+<p>3. <strong>total number of passengers does not exceed the maximum number of passenger of requested vehicle type</strong></p>
+<p>(Sedan maximum 4 passengers, SUV maximum 6 passengers)</p>
+</body>
+
+<h1>Available rides</h1>
+{% for ride in available_rides %}
+    <h5>Ride No.{{ride.id}} </h5>
+        <p>Ride owner: <strong>{{ ride.name }}</strong> </p>
+        <p>requests a {{ ride.vtype }} to <strong>{{ ride.dest }}</strong> </p>
+        <p>arrival window: {{ ride.arrival }}</p>
+        <p>The ride has {{ ride.pnum }} passengers, need for child seat is {{ ride.child }}</p>        
+        <p>Status : {{ ride.status }} <a href="/join_ride/{{ ride.id }}/">Join</a> </p>
+{% endfor %}
+{% endblock %}
